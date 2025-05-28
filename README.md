@@ -1,10 +1,11 @@
 # 🧠 Multi-Agent Finance Assistant
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.68+-green.svg)](https://fastapi.tiangolo.com/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.x-orange.svg)](https://streamlit.io/)  
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white)](https://www.docker.com/)
 
-A sophisticated voice-enabled financial analysis system that delivers real-time market briefs through orchestrated AI agents. Built with FastAPI microservices, Streamlit frontend, and powered by advanced RAG (Retrieval-Augmented Generation) capabilities.
+A voice-enabled financial analysis system that delivers real-time market briefs through orchestrated AI agents and supports interactive "clarify"-on-error flows via re-uploaded audio. Built with FastAPI, Streamlit, and RAG capabilities.
 
 ## 🚀 Demo
 
@@ -12,35 +13,56 @@ A sophisticated voice-enabled financial analysis system that delivers real-time 
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-- 🎙️ **Voice Interface**: Speech-to-text → AI processing → Audio response
-- 📊 **Real-Time Data**: Live stock prices, earnings, market news
-- 🔍 **Smart Search**: RAG-powered document retrieval from Pinecone
-- 🤖 **Multi-Agent**: Specialized agents for different data sources
-- 📱 **Web Dashboard**: Streamlit interface with voice controls
+### 🎙️ Voice Interface
+Upload a WAV file → Whisper STT → orchestrator → AI agents → text answer
 
-**Example Query:** *"What's our Asia tech exposure and any earnings surprises?"*
-**Response:** *"Asia tech is 22% of AUM, up from 18%. TSMC beat by 4%, Samsung missed by 2%."*
+### 🔄 Clarification Flow
+If any step (intent parsing, ticker extraction, data lookup, or RAG retrieval) fails or returns low-confidence, the system returns:
+
+```json
+{
+  "clarify": true,
+  "clarify_prompt": "Could you please rephrase or provide more detail?"
+}
+```
+
+The Streamlit UI prompts you to re-upload a clearer/rephrased WAV.
+
+### 📊 Real-Time Data
+Live stock prices, earnings, and filings via dedicated micro-services.
+
+### 🔍 RAG-Powered Retrieval
+Pinecone/FAISS backed "retrieve → analyze → generate" pipeline with confidence-based fallback.
+
+### 🛠️ Configurable Thresholds
+`CONF_THRESHOLD` in `orchestrator.py` (default 0.6) controls when clarification is triggered.
+
+### 📱 Web Dashboard
+Streamlit UI guides you through upload, response, and clarification steps.
 
 ---
 
 ## 🏗️ Architecture
 
-| Agent | Purpose | Tech Stack |
-|-------|---------|------------|
-| **STT Agent** | Speech-to-text | Whisper, FastAPI |
-| **API Agent** | Market data | yfinance, AlphaVantage |
-| **Scraping Agent** | News/filings | BeautifulSoup |
-| **Retriever Agent** | Document search | Pinecone, FAISS |
-| **Analysis Agent** | Risk analysis | Pandas, NumPy |
-| **Language Agent** | Response generation | OpenAI GPT |
+| Step | Service / Agent | Stack |
+|------|----------------|-------|
+| 1. STT | Whisper → FastAPI | whisper, FastAPI |
+| 2. Intent classification | Orchestrator.py | Python, Regex |
+| 3. Data lookup | API & Scraping Agents | yfinance, BeautifulSoup |
+| 4. Retrieval (RAG) | Pinecone/FAISS | Pinecone SDK, FAISS |
+| 5. Analysis | Analysis Agent | Pandas, NumPy |
+| 6. Generation | Language Agent | OpenAI GPT-4 |
+| 7. Clarification | Orchestrator fallback | JSON flag + Streamlit UI |
 
+### Flow Diagram
 ```
-Audio → STT → Intent Classification → Data Retrieval → Analysis → Language Generation → Response
+Audio → STT → Intent → Data/RAG → Analysis → Generation → Response
+               ↓                    ↓
+            Clarify (if needed) ←──┘
 ```
 
----
 
 ## 🚀 Quick Start
 
@@ -48,84 +70,93 @@ Audio → STT → Intent Classification → Data Retrieval → Analysis → Lang
 ```bash
 git clone https://github.com/lasyaMundrathi/multi-agent-finance-assistant.git
 cd multi-agent-finance-assistant
-python -m venv venv && source venv/bin/activate  # or venv\Scripts\activate on Windows
+python -m venv venv && source venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment
+### 2. Environment
+Copy and edit the environment file:
+
 ```bash
-cp .env.example .env
-# Add your API keys:
 # OPENAI_API_KEY=your_key
 # PINECONE_API_KEY=your_key
 ```
 
-### 3. Run Application
-```bash
-# Option 1: Docker (Recommended)
-docker-compose up --build
+### 3. Run
 
-# Option 2: Local
-python orchestrator.py
-streamlit run frontend/streamlit_app.py
+#### Option A: Docker (Recommended)
+```bash
+docker-compose up --build
+```
+
+#### Option B: Local
+```bash
+uvicorn orchestrator:app --reload         # FastAPI orchestrator on :8000
+uvicorn voice_service:app --port 8001      # STT/TTS service on :8001
+# Start other agents on their configured ports...
+streamlit run streamlit_app.py             # UI on :8501
 ```
 
 ### 4. Access
-- **Web Interface**: http://localhost:8501
+- **Web UI**: http://localhost:8501
 - **API Docs**: http://localhost:8000/docs
 
----
 
 ## 📡 API Endpoints
 
 ```bash
-# Main voice query
-POST /query (audio file) → natural language response
-
-# Individual services  
-POST /stt (audio) → transcribed text
-GET /market-data?ticker=AAPL → stock data
-POST /retrieve {"query": "earnings"} → relevant documents
-POST /analyze {"data": [...]} → risk analysis
+POST /query         (multipart WAV)    → { response }  or  { clarify, clarify_prompt }
+POST /stt           (multipart WAV)    → { text }
+GET  /market-data   (?ticker=XYZ)      → { latest_close, change_pct }
+POST /retrieve      { query }          → { results: [...], confidence }
+POST /analyze       { data: [...] }    → { data: [...] }
+POST /generate      { data: [...] }    → { text }
+GET  /portfolio-allocation → { asia_tech, ... }
 ```
 
----
 
 ## 💡 Usage Examples
 
-**Voice Queries:**
-- *"What's Apple's current price?"*
-- *"Analyze our tech sector risk"*
-- *"Latest Tesla earnings summary"*
-- *"Energy sector news today"*
+### Voice Queries
+- "What is the current stock price of Apple?"
+- "Show me the latest SEC filings for Netflix."
+- "What was Microsoft's P/E ratio last quarter?"
+- "How much of my portfolio is allocated to Asia tech?"
+- "Give me a summary of Tesla's historical performance."
 
-**API Usage:**
-```python
-import requests
-response = requests.post(
-    "http://localhost:8000/query",
-    files={"audio": open("query.wav", "rb")}
-)
-```
+### Clarification Flow
+If you upload an ambiguous or noisy WAV, you'll see:
 
----
+> 🔄 **Clarification needed:**  
+> "I couldn't determine which stock you meant. Could you please rephrase?"
 
-## 🛠️ Requirements
+Then simply re-upload a clearer/rephrased audio.
 
-- Python 3.11+
-- OpenAI API key
-- Pinecone account (for vector storage)
-- Optional: Alpha Vantage API key
 
----
+## 📄 Implementation Notes
+
+### Fallback Behavior
+If any micro-service (intent, RAG, portfolio) fails or returns low confidence, orchestrator returns a JSON "clarify" flag (instead of server-side TTS) per the uploaded PDF spec.
+
+### Streamlit UI
+Catches `{ clarify: true }`, shows the `clarify_prompt`, and drives re-upload UI.
+
+### Removed Dependencies
+Live TTS/STT recording was replaced with file-based re-upload flow, eliminating `sounddevice`, `soundfile`, and `gtts`.
+
+Refer to `Agents Intern Assignment (2).pdf` for full design and sequence diagrams.
+
 
 ## 🤝 Contributing
 
 1. Fork the repo
-2. Create feature branch: `git checkout -b feature-name`
-3. Make changes and test
-4. Submit pull request
+2. Create a feature branch (`git checkout -b feature-name`)
+3. Make and test changes
+4. Submit a pull request
 
-**Need help?** Open an [issue](https://github.com/lasyaMundrathi/multi-agent-finance-assistant/issues)
 
----
+## 🙏 Acknowledgments
+
+- OpenAI for Whisper and GPT-4
+- Pinecone for vector database services
+- FastAPI and Streamlit teams for excellent frameworks
