@@ -22,11 +22,6 @@ finance-assistant/
 
 ---
 
-## 🧱 System Architecture
-
-> 📌 **Insert this image as `docs/architecture.png`**
-
-![Architecture Diagram](docs/architecture.png)
 
 ### 🔁 Workflow
 
@@ -88,7 +83,7 @@ finance-assistant/
 
 ## 🧪 Demo
 
-🎥 Insert a GIF or video demo here
+[![Watch Demo](demo.png)](https://www.youtube.com/watch?v=skZHYClgcSU)
 
 ---
 
