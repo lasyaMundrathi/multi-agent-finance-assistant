@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# Temporary files
+temp.wav
+
+# Package info
+multi_agent_finance_assistant.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo 

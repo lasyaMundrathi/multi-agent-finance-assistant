@@ -1,0 +1,32 @@
+[project]
+name = "multi-agent-finance-assistant"
+version = "0.1.0"
+description = "A voice-enabled multi-agent financial assistant"
+requires-python = ">=3.11"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "streamlit",
+    "yfinance",
+    "openai-whisper",
+    "pyttsx3",
+    "pinecone-client",
+    "langchain",
+    "langgraph",
+    "crewai",
+    "langchain-community",
+    "langchain-openai",
+    "langchain-pinecone",
+    "python-dotenv",
+    "beautifulsoup4",
+    "requests",
+    "python-multipart"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agents*"]
