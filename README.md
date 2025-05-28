@@ -1,9 +1,27 @@
-# 🧠 Finance Assistant – Voice-Driven Financial Analyst
+# 🧠  Multi-Agent Finance Assistan
 
-An intelligent voice-enabled assistant that understands natural language queries, analyzes financial data, retrieves relevant market context, and responds conversationally — powered by modern AI tools like Whisper, LangChain, OpenAI, and Pinecone.
+A sophisticated voice-enabled financial analysis system that delivers real-time market briefs through orchestrated AI agents. Built with FastAPI microservices, Streamlit frontend, and powered by advanced RAG (Retrieval-Augmented Generation) capabilities.
+## 🧪 Demo
+
+[![Watch Demo](demo.png)](https://www.youtube.com/watch?v=skZHYClgcSU)
 
 ---
+## 🎯 Overview
 
+This multi-agent system addresses the daily needs of portfolio managers by providing automated market briefs through natural voice interactions. The system processes queries like:
+
+**Query:** *"What's our risk exposure in Asia tech stocks today, and highlight any earnings surprises?"*
+
+**Response:** *"Today, your Asia tech allocation is 22% of AUM, up from 18% yesterday. TSMC beat estimates by 4%, Samsung missed by 2%. Regional sentiment is neutral with a cautionary tilt due to rising yields."*
+
+### Key Capabilities
+- 🎙️ **Voice-First Interface**: Whisper STT → LLM Processing → TTS Output
+- 📊 **Real-Time Market Data**: Live stock prices, earnings, and market indicators
+- 🔍 **Intelligent Retrieval**: Vector-based document search with RAG
+- 🤖 **Multi-Agent Orchestration**: Specialized agents for different data sources
+- 📱 **Modern UI**: Streamlit-based dashboard with voice controls
+
+---
 ## 🗂 Project Structure
 
 ```
@@ -11,7 +29,7 @@ finance-assistant/
 ├── orchestrator.py         # Central router handling transcription → intent → pipeline
 ├── stt_agent.py           # Converts speech to text using Whisper
 ├── api_agent.py           # Retrieves current market data from yfinance
-├── filings_agent.py       # Scrapes Yahoo Finance for latest news/filings
+├── scarping_agent.py       # Scrapes Yahoo Finance for latest news/filings
 ├── retrieve_agent.py      # Embeds + retrieves relevant finance documents from Pinecone
 ├── analysis_agent.py      # Analyzes structured market/filings data for risk & earnings
 ├── language_agent.py      # Converts structured summary to natural language brief
@@ -81,17 +99,11 @@ finance-assistant/
 
 ---
 
-## 🧪 Demo
-
-[![Watch Demo](demo.png)](https://www.youtube.com/watch?v=skZHYClgcSU)
-
----
-
 ## 🛠 Setup & Installation
 
 ### 1. Clone & Set Up Virtual Env
 ```bash
-git clone https://github.com/yourname/multi-agent-finance-assistant.git
+git clone https://github.com/lasyaMundrathi/multi-agent-finance-assistant.git
 cd multi-agent-finance-assistant
 
 python -m venv .venv
