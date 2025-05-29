@@ -51,7 +51,7 @@ from types import SimpleNamespace
 
 class VoiceAgent:
     """Client wrapper for STT and TTS microservices, no live recording."""
-    def __init__(self, base_url="http://localhost:8001"):
+    def __init__(self, base_url="http://voice-agent:8001"):
         self.stt_url = f"{base_url}/stt"
         self.tts_url = f"{base_url}/tts"
 
