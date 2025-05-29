@@ -10,6 +10,7 @@ load_dotenv()
 
 app = FastAPI()
 
+
 # --- Vector store setup ---
 
 # Initialize Pinecone client
