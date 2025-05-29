@@ -37,7 +37,6 @@ async def generate(req: Request):
             + (f" {earnings}." if earnings else "")
             + (f" Regional sentiment is {sentiment}." if sentiment else "")
         ).strip()
-
         return {"text": text}
 
     except Exception as e:
