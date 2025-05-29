@@ -45,7 +45,7 @@ MAX_AMBIGUOUS_ATTEMPTS = 3  # You can adjust this
 def process_upload(wav, label="Your query"):
     st.audio(wav, format="audio/wav")
     with st.spinner("Processing your query..."):
-        resp = requests.post("http://localhost:8000/query", files={"file": wav}, timeout=30)
+        resp = requests.post("http://orchestrator:8000/query", files={"file": wav}, timeout=30)
         resp.raise_for_status()
         data = resp.json()
     return data
