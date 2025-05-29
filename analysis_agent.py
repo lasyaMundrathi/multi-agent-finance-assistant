@@ -7,6 +7,7 @@ app = FastAPI()
 class AnalyzeRequest(BaseModel):
     data: List[Optional[Dict[str, Any]]]
 
+
 @app.post("/analyze")
 async def analyze(request: AnalyzeRequest):
     """
