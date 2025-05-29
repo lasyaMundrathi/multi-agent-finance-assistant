@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+streamlit
+yfinance
+openai-whisper
+pyttsx3
+pinecone-client
+langchain
+crewai
+langchain-community
+langchain-openai
+langchain-pinecone
+python-dotenv
+beautifulsoup4
+requests
+python-multipart
