@@ -15,6 +15,7 @@ def get_market_data(ticker: str = Query(..., description="Stock ticker like TSM 
 
     ::ticker:: stock symbol (e.g., AAPL, TSM)
     """
+    
     try:
         hist = yf.Ticker(ticker).history(period="2d")
         if hist.empty:
