@@ -1,107 +1,107 @@
-  version: "3.11"
+version: "3.9"
 
-  services:
-    voice-agent:
-      build: .
-      container_name: voice_agent
-      working_dir: /app
-      command: uvicorn voice_agent:app --host 0.0.0.0 --port 8001 --reload
-      ports:
-        - "8001:8001"
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+services:
+  voice-agent:
+    image: my-app-image
+    container_name: voice_agent
+    working_dir: /app
+    command: uvicorn voice_agent:app --host 0.0.0.0 --port 8001 --reload
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
 
-    api-agent:
-      build: .
-      container_name: api_agent
-      working_dir: /app
-      command: uvicorn api_agent:app --host 0.0.0.0 --port 8002 --reload
-      ports:
-        - "8002:8002"
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+  api-agent:
+    image: my-app-image
+    container_name: api_agent
+    working_dir: /app
+    command: uvicorn api_agent:app --host 0.0.0.0 --port 8002 --reload
+    ports:
+      - "8002:8002"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
 
-    scraping-agent:
-      build: .
-      container_name: scraping_agent
-      working_dir: /app
-      command: uvicorn scarping_agent:app --host 0.0.0.0 --port 8003 --reload
-      ports:
-        - "8003:8003"
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+  scraping-agent:
+    image: my-app-image
+    container_name: scraping_agent
+    working_dir: /app
+    command: uvicorn scraping_agent:app --host 0.0.0.0 --port 8003 --reload
+    ports:
+      - "8003:8003"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
 
-    retriever-agent:
-      build: .
-      container_name: retriever_agent
-      working_dir: /app
-      command: uvicorn retriever_agent:app --host 0.0.0.0 --port 8004 --reload
-      ports:
-        - "8004:8004"
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+  retriever-agent:
+    image: my-app-image
+    container_name: retriever_agent
+    working_dir: /app
+    command: uvicorn retriever_agent:app --host 0.0.0.0 --port 8004 --reload
+    ports:
+      - "8004:8004"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
 
-    analysis-agent:
-      build: .
-      container_name: analysis_agent
-      working_dir: /app
-      command: uvicorn analysis_agent:app --host 0.0.0.0 --port 8005 --reload
-      ports:
-        - "8005:8005"
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+  analysis-agent:
+    image: my-app-image
+    container_name: analysis_agent
+    working_dir: /app
+    command: uvicorn analysis_agent:app --host 0.0.0.0 --port 8005 --reload
+    ports:
+      - "8005:8005"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
 
-    language-agent:
-      build: .
-      container_name: language_agent
-      working_dir: /app
-      command: uvicorn language_agent:app --host 0.0.0.0 --port 8006 --reload
-      ports:
-        - "8006:8006"
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+  language-agent:
+    image: my-app-image
+    container_name: language_agent
+    working_dir: /app
+    command: uvicorn language_agent:app --host 0.0.0.0 --port 8006 --reload
+    ports:
+      - "8006:8006"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
 
-    orchestrator:
-      build: .
-      container_name: orchestrator
-      working_dir: /app
-      command: uvicorn orchastrator:app --host 0.0.0.0 --port 8000 --reload
-      ports:
-        - "8000:8000"
-      depends_on:
-        - voice-agent
-        - api-agent
-        - scraping-agent
-        - retriever-agent
-        - analysis-agent
-        - language-agent
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+  orchestrator:
+    image: my-app-image
+    container_name: orchestrator
+    working_dir: /app
+    command: uvicorn orchastrator:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    depends_on:
+      - voice-agent
+      - api-agent
+      - scraping-agent
+      - retriever-agent
+      - analysis-agent
+      - language-agent
+    volumes:
+      - .:/app
+    env_file:
+      - .env
 
-    streamlit:
-      build: .
-      container_name: streamlit
-      working_dir: /app
-      command: streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0
-      ports:
-        - "8501:8501"
-      depends_on:
-        - orchestrator
-      volumes:
-        - .:/app
-      env_file:
-        - .env
+  streamlit:
+    image: my-app-image
+    container_name: streamlit
+    working_dir: /app
+    command: streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - orchestrator
+    volumes:
+      - .:/app
+    env_file:
+      - .env
