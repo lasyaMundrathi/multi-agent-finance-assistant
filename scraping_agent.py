@@ -20,6 +20,7 @@ def get_filings(ticker: str = Query("TSM", description="Company stock ticker sym
     """
     url = f"https://finance.yahoo.com/quote/{ticker}/news"
     headers = {"User-Agent": "Mozilla/5.0"}
+    
 
     try:
         res = requests.get(url, headers=headers, timeout=10)
