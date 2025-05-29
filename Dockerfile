@@ -1,22 +1,37 @@
+# Use slim base image
 FROM python:3.11-slim
-ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get install -y ffmpeg libsndfile1 && \
-    rm -rf /var/lib/apt/lists/*
-
+# Set working directory
 WORKDIR /app
 
-# Copy project files
-COPY pyproject.toml /app/
-COPY . /app
+# Install system-level dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    ffmpeg \
+    libespeak1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install build dependencies
-RUN pip install --upgrade pip setuptools wheel
+# Copy requirements first for Docker layer caching
+COPY requirements.txt .
 
-# Install project and dependencies
-RUN pip install .
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 8000 8001 8002 8003 8004 8005 8006 8501
+# Optional: preload whisper model (change model size as needed)
+RUN python3 -c "import whisper; whisper.load_model('small')"
 
-CMD ["sleep", "infinity"]
+# Copy app source code
+
+COPY . .
+
+# Expose relevant ports (if needed for FastAPI services)
+EXPOSE 8000 8501
+
+# Default command: can be overridden in docker-compose.yml
+CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
