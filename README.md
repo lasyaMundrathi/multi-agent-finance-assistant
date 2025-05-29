@@ -141,11 +141,6 @@ If any micro-service (intent, RAG, portfolio) fails or returns low confidence, o
 ### Streamlit UI
 Catches `{ clarify: true }`, shows the `clarify_prompt`, and drives re-upload UI.
 
-### Removed Dependencies
-Live TTS/STT recording was replaced with file-based re-upload flow, eliminating `sounddevice`, `soundfile`, and `gtts`.
-
-Refer to `Agents Intern Assignment (2).pdf` for full design and sequence diagrams.
-
 
 ## 🤝 Contributing
 
