@@ -8,7 +8,7 @@
 A voice-enabled financial analysis system that delivers real-time market briefs through orchestrated AI agents and supports interactive "clarify"-on-error flows via re-uploaded audio. Built with FastAPI, Streamlit, and RAG capabilities.
 
 ## 🚀 Demo
-
+watch demo👇🏻✨
 [![Watch Demo](demo.png)](https://www.youtube.com/watch?v=skZHYClgcSU)
 
 ---
